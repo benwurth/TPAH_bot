@@ -19,6 +19,9 @@ jobs:
   build_test_deploy:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{secrets.AwsAccessKeyId}}
+      AWS_SECRET_ACCESS_KEY: ${{secrets.AwsSecretAccessKey}}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -42,6 +45,15 @@ jobs:
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v1
+        
+      - name: Log into ECR
+        run: aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 339068795964.dkr.ecr.us-west-2.amazonaws.com
 
       - name: Docker Build
-        run: docker build .
+        run: docker build -t tpha-bot-prod .
+        
+      - name: Docker Tag
+        run: docker tag tpha-bot-prod:latest 339068795964.dkr.ecr.us-west-2.amazonaws.com/tpha-bot-prod:latest
+        
+      - name: Docker Push
+        run: docker push 339068795964.dkr.ecr.us-west-2.amazonaws.com/tpha-bot-prod:latest
