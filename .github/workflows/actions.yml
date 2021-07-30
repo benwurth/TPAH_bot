@@ -52,8 +52,8 @@ jobs:
       - name: Docker Build
         run: docker build -t tpha-bot-prod .
         
-      - name: Docker Tag
-        run: docker tag tpha-bot-prod:latest 339068795964.dkr.ecr.us-west-2.amazonaws.com/tpha-bot-prod:latest
+#      - name: Docker Tag
+#        run: docker tag tpha-bot-prod:latest 339068795964.dkr.ecr.us-west-2.amazonaws.com/tpha-bot-prod:latest
         
-      - name: Docker Push
-        run: docker push 339068795964.dkr.ecr.us-west-2.amazonaws.com/tpha-bot-prod:latest
+      - name: Lightsail Push
+        run: aws lightsail push-container-image --region us-west-2 --service-name ${{secret.ContainerServiceName}} --label tpha-bot-prod --image tpha-bot-prod:latest
