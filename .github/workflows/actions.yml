@@ -16,7 +16,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  build_test_deploy:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -36,17 +36,9 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore
   
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
       - name: Test
         run: dotnet test --no-restore --verbosity normal
         
-  deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v1
