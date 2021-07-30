@@ -55,5 +55,8 @@ jobs:
 #      - name: Docker Tag
 #        run: docker tag tpha-bot-prod:latest 339068795964.dkr.ecr.us-west-2.amazonaws.com/tpha-bot-prod:latest
         
+      - name: Install Lightsail Plugin
+        run: curl "https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl" -o "/usr/local/bin/lightsailctl" && sudo chmod +x /usr/local/bin/lightsailctl
+        
       - name: Lightsail Push
         run: aws lightsail push-container-image --region us-west-2 --service-name ${{secrets.ContainerServiceName}} --label tpha-bot-prod --image tpha-bot-prod:latest
