@@ -35,31 +35,31 @@ jobs:
         with:
           # Optional SDK version to use. If not provided, will install global.json version when available. Examples: 2.2.104, 3.1, 3.1.x
           dotnet-version: 5.0.302
-          
+
       - name: Dotnet Restore
         run: dotnet restore
       - name: Build
         run: dotnet build --configuration Release --no-restore
-  
+
       - name: Test
         run: dotnet test --no-restore --verbosity normal
-        
+
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v1
-        
-#      - name: Log into ECR
-#        run: aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 339068795964.dkr.ecr.us-west-2.amazonaws.com
+
+      #      - name: Log into ECR
+      #        run: aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 339068795964.dkr.ecr.us-west-2.amazonaws.com
 
       - name: Docker Build
         run: docker build -t tpha-bot-prod .
-        
-#      - name: Docker Tag
-#        run: docker tag tpha-bot-prod:latest 339068795964.dkr.ecr.us-west-2.amazonaws.com/tpha-bot-prod:latest
-        
+
+        #      - name: Docker Tag
+        #        run: docker tag tpha-bot-prod:latest 339068795964.dkr.ecr.us-west-2.amazonaws.com/tpha-bot-prod:latest
+
       - name: Install Lightsail Plugin
         run: curl "https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl" -o "/usr/local/bin/lightsailctl" && sudo chmod +x /usr/local/bin/lightsailctl
-        
+
       - name: Lightsail Push
         run: |
           IMAGE_NAME=`aws lightsail push-container-image --region us-west-2 --service-name $LIGHTSAIL_SERVICE_NAME --label tpha-bot-prod --image tpha-bot-prod:latest | \
@@ -67,22 +67,6 @@ jobs:
             sed 's/^Refer to this image as "\(.*\)" in deployments.$/\1/'`
       - name: Create Lightsail Deployment Configuration File
         run: |
-          echo ' \
-          { \
-            "serviceName": "$LIGHTSAIL_SERVICE_NAME", \
-            "containers": { \
-              "TPHA_bot_prod": { \
-                "image": "$IMAGE_NAME", \
-                "command": [], \
-                "environment": { \
-                  "DISCORD_BotToken": "$DISCORD_BOT_TOKEN" \
-                }, \
-                "ports": { \
-                  "8080": "HTTP" \
-                } \
-              } \
-            } \
-          } \
-          ' > /tmp/lc.json && cat /tmp/lc.json
+          echo '{"serviceName": "$LIGHTSAIL_SERVICE_NAME","containers": {"TPHA_bot_prod": {"image": "$IMAGE_NAME","command": [],"environment": {"DISCORD_BotToken": "$DISCORD_BOT_TOKEN"},"ports": {"8080": "HTTP"}}}}' > /tmp/lc.json && cat /tmp/lc.json
       - name: Lightsail Deploy
         run: aws lightsail create-container-service-deployment --cli-input-json /tmp/lc.json
