@@ -46,8 +46,8 @@ jobs:
         id: buildx
         uses: docker/setup-buildx-action@v1
         
-      - name: Log into ECR
-        run: aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 339068795964.dkr.ecr.us-west-2.amazonaws.com
+#      - name: Log into ECR
+#        run: aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 339068795964.dkr.ecr.us-west-2.amazonaws.com
 
       - name: Docker Build
         run: docker build -t tpha-bot-prod .
