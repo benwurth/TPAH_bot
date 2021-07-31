@@ -68,6 +68,6 @@ jobs:
           echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
       - name: Create Lightsail Deployment Configuration File
         run: |
-          echo '{"serviceName": "'$LIGHTSAIL_SERVICE_NAME'","containers": {"TPHA-bot-prod": {"image": "'$IMAGE_NAME'","command": [],"environment": {"DISCORD_BotToken": "'$DISCORD_BOT_TOKEN'"},"ports": {"8080": "HTTP"}}}}' > /tmp/lc.json && cat /tmp/lc.json
+          echo '{"serviceName": "'$LIGHTSAIL_SERVICE_NAME'","containers": {"tpha-bot-prod": {"image": "'$IMAGE_NAME'","command": [],"environment": {"DISCORD_BotToken": "'$DISCORD_BOT_TOKEN'"},"ports": {"8080": "HTTP"}}}}' > /tmp/lc.json && cat /tmp/lc.json
       - name: Lightsail Deploy
         run: aws lightsail create-container-service-deployment --cli-input-json file:///tmp/lc.json --debug
