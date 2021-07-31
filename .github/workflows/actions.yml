@@ -42,7 +42,7 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Test
-        run: dotnet test --no-restore --verbosity normal
+        run: dotnet test --no-build --verbosity normal
 
       - name: Set up Docker Buildx
         id: buildx
@@ -69,4 +69,4 @@ jobs:
         run: |
           echo '{"serviceName": "'$LIGHTSAIL_SERVICE_NAME'","containers": {"TPHA_bot_prod": {"image": "'$IMAGE_NAME'","command": [],"environment": {"DISCORD_BotToken": "'$DISCORD_BOT_TOKEN'"},"ports": {"8080": "HTTP"}}}}' > /tmp/lc.json && cat /tmp/lc.json
       - name: Lightsail Deploy
-        run: aws lightsail create-container-service-deployment --cli-input-json \'$(cat /tmp/lc.json)\'
+        run: aws lightsail create-container-service-deployment --cli-input-json file:///tmp/lc.json
