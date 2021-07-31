@@ -5,7 +5,6 @@ FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["TPHA_bot/TPHA_bot.fsproj", "TPHA_bot/"]
 COPY ["TPHA_bot.Shared/TPHA_bot.Shared.fsproj", "TPHA_bot.Shared/"]
-COPY ["TPHA_bot.Tests/TPHA_bot.Tests.fsproj", "TPHA_bot.Tests/"]
 RUN dotnet restore "TPHA_bot/TPHA_bot.fsproj"
 COPY . .
 WORKDIR "/src/TPHA_bot"
