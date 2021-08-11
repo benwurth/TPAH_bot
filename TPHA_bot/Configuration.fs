@@ -65,8 +65,14 @@ let tryGetEnvironmentVariableConfiguration
         optionalPrefix
         (configurationType, configurationMap)
         (fun s -> Option.ofObj (Environment.GetEnvironmentVariable(s)))
+        
+let wrapConfigurationErrorMessage result =
+    match result with
+    | Error e -> Error $"Could not get configuration: {e}"
+    | Ok x -> Ok x
 
-let getConfiguration =
+let getAppConfiguration =
     tryGetEnvironmentVariableConfiguration (Some "DISCORD_") (typeof<BotConfiguration>, Map.empty)
     //    |> tryGetJsonConfiguration "appsettings.json"
     |> validateConfiguration
+    |> wrapConfigurationErrorMessage
