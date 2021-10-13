@@ -8,24 +8,26 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Content Include="README.md"/>
-        <Compile Include="Stocks\YFinanceApiTypes.fs"/>
-        <Compile Include="Stocks\YFinanceService.fs"/>
-        <Compile Include="Commands\StockCommand.fs"/>
-        <Compile Include="Configuration.fs"/>
-        <Compile Include="CommandUtils.fs"/>
-        <Compile Include="DiscordGlue.fs"/>
-        <Compile Include="Program.fs"/>
+        <Content Include="README.md" />
+        <Compile Include="CommandUtils.fs" />
+        <Compile Include="Stocks\YFinanceApiTypes.fs" />
+        <Compile Include="Stocks\YFinanceService.fs" />
+        <Compile Include="Commands\StockCommand.fs" />
+        <Compile Include="Commands\CryptoCommand.fs" />
+        <Compile Include="Configuration.fs" />
+        <Compile Include="MatchCommand.fs" />
+        <Compile Include="DiscordGlue.fs" />
+        <Compile Include="Program.fs" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="DSharpPlus" Version="4.0.1"/>
-        <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.1"/>
-        <PackageReference Include="FSharp.Json" Version="0.4.0"/>
+        <PackageReference Include="DSharpPlus" Version="4.0.1" />
+        <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.1" />
+        <PackageReference Include="FSharp.Json" Version="0.4.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\TPHA_bot.Shared\TPHA_bot.Shared.fsproj"/>
+        <ProjectReference Include="..\TPHA_bot.Shared\TPHA_bot.Shared.fsproj" />
     </ItemGroup>
 
 </Project>

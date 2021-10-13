@@ -5,6 +5,7 @@ open DSharpPlus
 open DSharpPlus.EventArgs
 open TPHA_bot.Configuration
 open TPHA_bot.CommandUtils
+open TPHA_bot.MatchCommand
 
 type MessageHandler = DiscordClient -> MessageCreateEventArgs -> unit
 
