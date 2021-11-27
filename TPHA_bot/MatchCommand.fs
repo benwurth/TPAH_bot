@@ -3,8 +3,10 @@ module TPHA_bot.MatchCommand
 open DSharpPlus.Entities
 open TPHA_bot.Commands.CryptoCommand
 open TPHA_bot.Commands.StockCommand
+open TPHA_bot.Commands.RunListRolesCommand
+open TPHA_bot.Configuration
 
-let matchCommand (command: string) (message: DiscordMessage) : Async<Result<string, string>> =
+let matchCommand (command: string) (message: DiscordMessage) (config: BotConfiguration) : Async<Result<string, string>> =
     async {
         let commandParts = command.Split(' ')
 
@@ -17,6 +19,9 @@ let matchCommand (command: string) (message: DiscordMessage) : Async<Result<stri
                 return result
             | "crypto" ->
                 let! result = runCryptoCommand remainingParts message
+                return result
+            | "list-roles" ->
+                let! result = runListRolesCommand message config.RoleCutoff
                 return result
             | _ -> return Ok "No command matched."
     }

@@ -13,18 +13,27 @@ let logErrors (res: Result<DiscordClient, string>) : Result<DiscordClient, strin
 
 let mainAsync =
     async {
-        let res =
-            getAppConfiguration
-            |> configureDiscordBot
-            |> addMessageHandler pingMessageResponse
-            |> addMessageHandler handleCommands
-            |> logErrors
+        let botConfigurationResult = getAppConfiguration
+        match botConfigurationResult with
+        | Error e ->
+            printfn $"There was an error: {e}"
+            ()
+        | Ok config ->
+//            let handleCommandsGood client args: Task =
+//                handleCommands client args config
+            
+            let res =
+                botConfigurationResult
+                |> Result.bind configureDiscordBot
+                |> Result.bind (addMessageHandler pingMessageResponse)
+                |> Result.bind (addMessageHandler (fun c -> handleCommands c config))
+                |> logErrors
 
-        match res with
-        | Error _ -> ()
-        | Ok discord ->
-            do! discord.ConnectAsync() |> Async.AwaitTask
-            do! Task.Delay(-1) |> Async.AwaitTask
+            match res with
+            | Error _ -> ()
+            | Ok discord ->
+                do! discord.ConnectAsync() |> Async.AwaitTask
+                do! Task.Delay(-1) |> Async.AwaitTask
     }
 
 [<EntryPoint>]

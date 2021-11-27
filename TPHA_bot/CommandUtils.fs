@@ -13,3 +13,6 @@ let sendText (message: DiscordMessage) (text: string) =
         let! _ = message.RespondAsync(text) |> Async.AwaitTask
         return ()
     }
+
+let messageSentResult =
+    Ok "Message sent."

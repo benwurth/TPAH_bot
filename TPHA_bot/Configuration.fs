@@ -4,7 +4,10 @@ open System
 open System.Reflection
 open Microsoft.FSharp.Reflection
 
-type BotConfiguration = { BotToken: string }
+type BotConfiguration = {
+    BotToken: string
+    RoleCutoff: Option<string>
+}
 
 let rec configContainsAllRequiredFields (recordFields: PropertyInfo list) config : Result<bool, string> =
     match recordFields with
@@ -16,7 +19,10 @@ let rec configContainsAllRequiredFields (recordFields: PropertyInfo list) config
             configContainsAllRequiredFields tail config
 
 let buildBotConfiguration (configMap: Map<string, string>) =
-    { BotToken = configMap.Item("BotToken") }
+    {
+        BotToken = configMap.Item("BotToken")
+        RoleCutoff = configMap.TryFind("RoleCutoff")
+    }
 
 let validateConfiguration (configType, config: Map<string, string>) =
     let recordFields = FSharpType.GetRecordFields(configType)

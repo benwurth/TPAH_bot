@@ -27,5 +27,5 @@ let runStockCommand (commandParts: string []) (message: DiscordMessage) : Async<
             | "rope" -> do! sendRopeGif
             | _ -> do! sendStockPrice firstPart message
 
-            return Ok "Message sent."
+            return messageSentResult
     }

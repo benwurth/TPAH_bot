@@ -9,15 +9,12 @@ open TPHA_bot.MatchCommand
 
 type MessageHandler = DiscordClient -> MessageCreateEventArgs -> unit
 
-let configureDiscordBot (configurationResult: Result<BotConfiguration, string>) =
-    match configurationResult with
-    | Error x -> Error x
-    | Ok config ->
-        let discordConfiguration = DiscordConfiguration()
-        discordConfiguration.Token <- config.BotToken
-        discordConfiguration.TokenType <- TokenType.Bot
-        discordConfiguration.Intents <- DiscordIntents.AllUnprivileged
-        Ok (new DiscordClient(discordConfiguration))
+let configureDiscordBot (config: BotConfiguration) =
+    let discordConfiguration = DiscordConfiguration()
+    discordConfiguration.Token <- config.BotToken
+    discordConfiguration.TokenType <- TokenType.Bot
+    discordConfiguration.Intents <- DiscordIntents.AllUnprivileged
+    Ok(new DiscordClient(discordConfiguration)  )
 
 let pingMessageResponse (_: DiscordClient) (a: MessageCreateEventArgs) : Task =
     async {
@@ -30,20 +27,17 @@ let pingMessageResponse (_: DiscordClient) (a: MessageCreateEventArgs) : Task =
     |> Async.StartAsTask
     :> Task
 
-let addMessageHandler handler (dcRes: Result<DiscordClient, string>) =
-    match dcRes with
-    | Error x -> Error x
-    | Ok discordClient ->
-        discordClient.add_MessageCreated (fun x c -> handler x c)
-        Ok discordClient
+let addMessageHandler handler (discordClient: DiscordClient) =
+    discordClient.add_MessageCreated (fun x c -> handler x c)
+    Ok discordClient
 
-let handleCommands _ (args: MessageCreateEventArgs) : Task =
+let handleCommands _ (config: BotConfiguration) (args: MessageCreateEventArgs) : Task =
     async {
         let message = args.Message.Content
 
         match checkCommandCharacter '!' message with
         | true, command ->
-            let! result = matchCommand command args.Message
+            let! result = matchCommand command args.Message config
 
             match result with
             | Ok "Message sent." -> return ()
@@ -53,9 +47,11 @@ let handleCommands _ (args: MessageCreateEventArgs) : Task =
             | Error x ->
                 let errorMessage = $"ERROR: {x}"
                 printfn $"{errorMessage}"
+
                 let! _ =
                     args.Message.RespondAsync(errorMessage)
                     |> Async.AwaitTask
+
                 return ()
         | false, _ -> return ()
     }
